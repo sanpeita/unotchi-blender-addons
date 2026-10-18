@@ -19,7 +19,7 @@ from bpy.types import Operator, Panel, PropertyGroup
 bl_info = {
     "name": "Auto Snake Rig (クネクネリグ)",
     "author": "vtuber-ted-project",
-    "version": (1, 0, 0),
+    "version": (1, 0, 1),
     "blender": (4, 2, 0),
     "location": "3D Viewport > N Panel > Rigging",
     "description": "指定シェイプにX/Y/Zボーン数を指定してアーマチュアを自動生成。頂点数バランスを考慮した蛇クネクネ用シンプルリグ。",
@@ -291,7 +291,7 @@ class SNAKE_RIG_PT_panel(Panel):
     bl_label = "クネクネリグ"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Rigging"
+    bl_category = "うのっち"
     bl_context = "objectmode"
 
     def draw(self, context: bpy.types.Context) -> None:

@@ -20,7 +20,7 @@ from bpy.types import Operator, Panel
 bl_info = {
     "name": "Zatsu Remesh (雑リメッシュ)",
     "author": "vtuber-ted-project",
-    "version": (1, 0, 0),
+    "version": (1, 0, 1),
     "blender": (4, 2, 0),
     "location": "3D Viewport > N Panel > Remesh",
     "description": "AI生成メッシュ向け安全半減リメッシュ。クリーン機能優先で形を崩さず頂点半減。繰り返し適用可能。",
@@ -230,7 +230,7 @@ class ZATSU_REMESH_PT_panel(Panel):
     bl_label = "雑リメッシュ (Zatsu Remesh)"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Remesh"
+    bl_category = "うのっち"
     bl_context = "objectmode"
 
     def draw(self, context: bpy.types.Context) -> None:

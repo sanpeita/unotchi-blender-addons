@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "auto_snake_rig"
-version = "1.0.0"
+version = "1.0.1"
 name = "Unotchi Auto Snake Rig"
 tagline = "Generate a wiggly rig from X/Y/Z bone counts"
 maintainer = "unotchi"

@@ -7,16 +7,16 @@
       "id": "auto_snake_rig",
       "name": "Unotchi Auto Snake Rig",
       "tagline": "Generate a wiggly rig from X/Y/Z bone counts",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "type": "add-on",
       "maintainer": "unotchi",
       "license": [
         "SPDX:MIT"
       ],
       "blender_version_min": "4.2.0",
-      "archive_url": "./auto_snake_rig-1.0.0.zip",
-      "archive_size": 4972,
-      "archive_hash": "sha256:70f9e19404ad6fdd1db9942fb5af0dc1f38102e046b1a5e6c938c741f3d8c370"
+      "archive_url": "./auto_snake_rig-1.0.1.zip",
+      "archive_size": 4981,
+      "archive_hash": "sha256:db9f1876252c2ecf51aec89e358a12513ac2aa076825d99e33f257c03ce371fe"
     },
     {
       "schema_version": "1.0.0",
@@ -32,7 +32,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_mesh_doctor-1.0.0.zip",
       "archive_size": 3974,
-      "archive_hash": "sha256:d870c0da6374893f1d2bf058c2d717f70a9a57560c70d5e97b092e8b52fc5602"
+      "archive_hash": "sha256:a8e36a775c9e250a9ea944d8c258cfd04f95e26893da43c0b8f59aa452186813"
     },
     {
       "schema_version": "1.0.0",
@@ -48,23 +48,23 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_torso_rig-1.0.0.zip",
       "archive_size": 5265,
-      "archive_hash": "sha256:d64eee40213e55851678c18da91d8b8d97e0f6c05b1f1bfde8cb706028a801a3"
+      "archive_hash": "sha256:9e8ff20b883c6eeebd839a91c63c8ac309307ed1a20fd386f5caad8656a6ea5f"
     },
     {
       "schema_version": "1.0.0",
       "id": "zatsu_remesh",
       "name": "Unotchi Zatsu Remesh",
       "tagline": "Safe half-decimation for heavy AI meshes",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "type": "add-on",
       "maintainer": "unotchi",
       "license": [
         "SPDX:MIT"
       ],
       "blender_version_min": "4.2.0",
-      "archive_url": "./zatsu_remesh-1.0.0.zip",
-      "archive_size": 4274,
-      "archive_hash": "sha256:23dbbc3cd750d43a3ce4127647706e6fe2877ea18485608097b3bebc2d23de95"
+      "archive_url": "./zatsu_remesh-1.0.1.zip",
+      "archive_size": 4284,
+      "archive_hash": "sha256:f8fd6640c5eb76f167fde9a9990683f4142fcc773c784ebb4e02d4a97f8dce3a"
     }
   ]
 }
