@@ -3,6 +3,26 @@
 VTuber・3D制作・デジタル教育の現場で使うために作った Blender アドオン集です。
 Blender 4.2 以降（開発・検証は 5.2 LTS）で動きます。
 
+<!-- EN:START -->
+## English
+
+Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.2+ (developed and tested on 5.2 LTS).
+
+| Add-on | What it does | Where |
+|---|---|---|
+| **Unotchi Mesh Doctor** | Scan and repair AI-generated meshes in one click | 3D Viewport > Sidebar (N) > うのっち tab > Mesh Doctor |
+| **Unotchi Auto Snake Rig** | Generate a wiggly rig from X/Y/Z bone counts | 3D Viewport > Sidebar (N) > うのっち tab > Snake Rig |
+| **Unotchi Zatsu Remesh** | Safe half-decimation for heavy AI meshes | 3D Viewport > Sidebar (N) > うのっち tab > Zatsu Remesh |
+| **Unotchi Torso Rig** | One-click block mannequin based on VRM1.x humanoid bones | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
+
+**Install** — in Blender, open `Get Extensions` and add this repository URL (one-tap install, and updates arrive automatically):
+
+    https://unotchi.com/unotchi-blender-addons/repository/index.json
+
+Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`. Step-by-step guide: [docs/install-en.md](docs/install-en.md).
+
+<!-- EN:END -->
+
 ## 収録アドオン
 
 <!-- ADDONS:START -->
