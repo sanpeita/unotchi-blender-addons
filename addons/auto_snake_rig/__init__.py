@@ -10,10 +10,11 @@ Blender 4.2+ / 最新版対応
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import bpy
 from bpy.props import IntProperty, PointerProperty
 from bpy.types import Operator, Panel, PropertyGroup
-
 
 bl_info = {
     "name": "Auto Snake Rig (クネクネリグ)",
@@ -72,7 +73,7 @@ class SNAKE_RIG_OT_generate(Operator):
     bl_idname = "snake_rig.generate"
     bl_label = "クネクネリグを生成"
     bl_description = "現在のメッシュに対して指定軸数のボーンを持つアーマチュアを作成します"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context: bpy.types.Context) -> bool:
@@ -105,7 +106,7 @@ class SNAKE_RIG_OT_generate(Operator):
                 {'INFO'},
                 f"生成完了: {total_bones}ボーン (頂点数 {vertex_count}, 上限 {max_bones})"
             )
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001 - 契約どおり ERROR 報告して CANCELLED を返す
             self.report({'ERROR'}, f"リグ生成に失敗: {ex}")
             return {'CANCELLED'}
 
@@ -140,8 +141,7 @@ class SNAKE_RIG_OT_generate(Operator):
         # ボーン長さの基準（最長辺に対する相対）
         main_len = max(lx, ly, lz)
         base_bone_len = main_len / max(nx, ny, nz, 1) / 2.0
-        if base_bone_len < 0.02:
-            base_bone_len = 0.02
+        base_bone_len = max(base_bone_len, 0.02)
 
         # 位置リスト
         x_pos = _get_axis_positions(min_x, max_x, nx)

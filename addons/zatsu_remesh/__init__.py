@@ -12,10 +12,10 @@ Blender 4.2+ / 最新版対応
 from __future__ import annotations
 
 import math
+from typing import ClassVar
 
 import bpy
 from bpy.types import Operator, Panel
-
 
 bl_info = {
     "name": "Zatsu Remesh (雑リメッシュ)",
@@ -67,7 +67,7 @@ class ZATSU_REMESH_OT_apply(Operator):
     bl_idname = "zatsu_remesh.apply"
     bl_label = "雑リメッシュ適用 (頂点半減)"
     bl_description = "クリーン機能で形を守りつつ頂点数を約半分に。AI生成メッシュの減量に最適。繰り返し可。"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
 
     @classmethod
     def poll(cls, context: bpy.types.Context) -> bool:
@@ -107,32 +107,32 @@ class ZATSU_REMESH_OT_apply(Operator):
             # 孤立要素除去
             try:
                 bpy.ops.mesh.delete_loose()
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
 
             # 重複頂点マージ（最重要・安全第一）
             try:
                 _compat_merge_by_distance(threshold)
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
 
             # 退化面除去
             try:
                 bpy.ops.mesh.dissolve_degenerate(threshold=threshold * 1.5)
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
 
             # 法線修正（向き破綻防止）
             try:
                 bpy.ops.mesh.normals_make_consistent(inside=False)
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
 
             # Limited Dissolve（平面寄せで「雑に」減らしても形が崩れにくい）
             # 角度は控えめ（5度）に。AIメッシュの微小コプラナーを安全にまとめる
             try:
                 bpy.ops.mesh.dissolve_limited(angle_limit=math.radians(5.0))
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
 
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -162,11 +162,11 @@ class ZATSU_REMESH_OT_apply(Operator):
                 bpy.ops.mesh.select_all(action='SELECT')
                 try:
                     _compat_merge_by_distance(threshold * 0.6)
-                except Exception:
+                except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                     pass
                 try:
                     bpy.ops.mesh.delete_loose()
-                except Exception:
+                except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                     pass
                 bpy.ops.object.mode_set(mode='OBJECT')
                 obj.data.update()
@@ -189,15 +189,15 @@ class ZATSU_REMESH_OT_apply(Operator):
                 bpy.ops.mesh.select_all(action='SELECT')
                 try:
                     _compat_merge_by_distance(max(1e-6, threshold * 0.5))
-                except Exception:
+                except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                     pass
                 try:
                     bpy.ops.mesh.delete_loose()
-                except Exception:
+                except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                     pass
                 try:
                     bpy.ops.mesh.dissolve_degenerate(threshold=threshold * 0.8)
-                except Exception:
+                except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                     pass
                 bpy.ops.object.mode_set(mode='OBJECT')
                 obj.data.update()
@@ -211,12 +211,12 @@ class ZATSU_REMESH_OT_apply(Operator):
                 f"雑リメッシュ完了: {before_v} → {after_v} verts (目標 ~{target_v}, {passes}パス, 閾値 {threshold:.6f})"
             )
 
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001 - 契約どおり ERROR 報告して CANCELLED を返す
             # 失敗時はできるだけ元の状態に戻す努力（Undo があるので最小限）
             try:
                 if context.mode != 'OBJECT':
                     bpy.ops.object.mode_set(mode='OBJECT')
-            except Exception:
+            except Exception:  # noqa: BLE001,S110 - 機能が無い環境でも止めない（最善努力）
                 pass
             self.report({'ERROR'}, f"雑リメッシュに失敗しました: {ex}")
             return {'CANCELLED'}
@@ -247,7 +247,7 @@ class ZATSU_REMESH_PT_panel(Panel):
             col.label(text=f"1回適用後の目安: ~{target}")
 
             layout.separator()
-            op = layout.operator(ZATSU_REMESH_OT_apply.bl_idname, icon='MOD_DECIM')
+            layout.operator(ZATSU_REMESH_OT_apply.bl_idname, icon='MOD_DECIM')
             layout.label(text="※ 形の破綻を最優先。AI生成メッシュ向け。")
 
             layout.separator()

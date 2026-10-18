@@ -7,9 +7,11 @@ bl_info = {
     "author": "unotchi",
 }
 
-import bpy
+from typing import ClassVar
+
 import bmesh
-from mathutils import Vector, Matrix
+import bpy
+from mathutils import Matrix, Vector
 
 # ──────────────── Bone definitions ────────────────
 # Format: (name, head_xyz, tail_xyz, parent_name)
@@ -91,9 +93,6 @@ def _build_armature(bone_defs, height_m, size_factor, scene):
     """Create armature with bones from bone_defs.
     Returns (armature_obj, report_dict).
     """
-    import bpy
-    from mathutils import Vector
-
     arm_data = bpy.data.armatures.new("unotchi_torso")
     arm_obj = bpy.data.objects.new("unotchi_torso", arm_data)
     scene.collection.objects.link(arm_obj)
@@ -126,11 +125,10 @@ def _build_armature(bone_defs, height_m, size_factor, scene):
         bpy.ops.object.mode_set(mode='OBJECT')
 
     # Collect report info from OBJECT mode bones
-    bone_names = [b.name for b in arm_data.bones]
     edge_lengths = [b.length * size_factor for b in arm_data.bones]
     edge_min = min(edge_lengths) if edge_lengths else 0.0
     edge_max = max(edge_lengths) if edge_lengths else 0.0
-    arm_bone_names = set(b.name for b in arm_data.bones)
+    arm_bone_names = {b.name for b in arm_data.bones}
     missing = len(_VRM_REQUIRED - arm_bone_names)
 
     return arm_obj, {
@@ -141,14 +139,12 @@ def _build_armature(bone_defs, height_m, size_factor, scene):
     }
 
 
-def _build_mesh(arm_obj, bone_defs, size_factor, scene):
-    """Create combined mesh with one cube per bone.
+def _build_mesh(arm_obj, bone_defs, size_factor, shape_mode, thickness, scene):
+    """Create combined mesh with one block per bone.
+
+    shape_mode: 'CUBE' = 一辺 L / 'SLIM' = 長さ L・太さ L * thickness
     Returns (mesh_obj, report_dict).
     """
-    import bpy
-    import bmesh
-    from mathutils import Vector, Matrix
-
     arm_data = arm_obj.data
     me = bpy.data.meshes.new("unotchi_torso_body")
     mesh_obj = bpy.data.objects.new("unotchi_torso_body", me)
@@ -161,6 +157,8 @@ def _build_mesh(arm_obj, bone_defs, size_factor, scene):
         for i, (name, _h, _t, _p) in enumerate(bone_defs):
             bone = arm_data.bones[name]
             L = bone.length * size_factor
+            # 断面の一辺。CUBE は一辺=L、SLIM は長さを保ったまま細くする
+            w = L if shape_mode == 'CUBE' else L * thickness
 
             # Create unit cube
             cube = bmesh.ops.create_cube(bm, size=1.0, matrix=Matrix.Identity(4))
@@ -172,7 +170,7 @@ def _build_mesh(arm_obj, bone_defs, size_factor, scene):
             # Transform to bone space
             mat = bone.matrix_local
             for v in verts:
-                local = Vector((v.co.x, v.co.y + 0.5, v.co.z)) * L
+                local = Vector((v.co.x * w, (v.co.y + 0.5) * L, v.co.z * w))
                 v.co = mat @ local
 
         # Write mesh data
@@ -192,6 +190,8 @@ def _build_mesh(arm_obj, bone_defs, size_factor, scene):
     mod.object = arm_obj
     mesh_obj.parent = arm_obj
 
+    width_scale = 1.0 if shape_mode == 'CUBE' else thickness
+    widths = [b.length * size_factor * width_scale for b in arm_obj.data.bones]
     return mesh_obj, {
         "mesh_name": mesh_obj.name,
         "cubes": len(bone_defs),
@@ -199,16 +199,19 @@ def _build_mesh(arm_obj, bone_defs, size_factor, scene):
         "faces": len(me.polygons),
         "vertex_groups": len(mesh_obj.vertex_groups),
         "skinned": True,
+        "width_min": round(min(widths), 6) if widths else 0.0,
+        "width_max": round(max(widths), 6) if widths else 0.0,
     }
 
 
-def _build_torso(bone_defs, mode, height_m, size_factor, scene):
-    """Full torso generation pipeline. Returns {'FINISHED'} or {'CANCELLED'}."""
+def _build_torso(bone_defs, mode, height_m, size_factor, shape_mode, thickness, scene):
+    """Full torso generation pipeline. Returns the scene report dict."""
     # Build armature
     arm_obj, arm_report = _build_armature(bone_defs, height_m, size_factor, scene)
 
     # Build mesh
-    mesh_obj, mesh_report = _build_mesh(arm_obj, bone_defs, size_factor, scene)
+    _mesh_obj, mesh_report = _build_mesh(
+        arm_obj, bone_defs, size_factor, shape_mode, thickness, scene)
 
     # Count mesh objects in scene
     mesh_count = sum(1 for o in scene.objects if o.type == 'MESH')
@@ -220,6 +223,10 @@ def _build_torso(bone_defs, mode, height_m, size_factor, scene):
         "mesh_name": mesh_report["mesh_name"],
         "height_m": height_m,
         "size_factor": size_factor,
+        "shape_mode": shape_mode,
+        "thickness": thickness,
+        "width_min": mesh_report["width_min"],
+        "width_max": mesh_report["width_max"],
         "bones": arm_report["bones"],
         "cubes": mesh_report["cubes"],
         "verts": mesh_report["verts"],
@@ -244,13 +251,46 @@ def _build_torso(bone_defs, mode, height_m, size_factor, scene):
     return report
 
 
+# ──────────────── Shape properties ────────────────
+
+_SHAPE_LABELS = {"CUBE": "立方体", "SLIM": "細身"}
+
+
+def shape_label(mode):
+    return _SHAPE_LABELS.get(mode, mode)
+
+
+def _shape_mode_prop():
+    """Scene プロパティ用。演算子のクラス本体ではアノテーション構文で直接書くこと
+    （ヘルパの戻り値をアノテーション付きで代入すると RNA に解決されず実行時に落ちる）。"""
+    return bpy.props.EnumProperty(
+        name="形状",
+        description="ブロックの作り方",
+        items=[
+            ('SLIM', "細身", "長さはボーン長のまま、太さだけ細くする（関節が読みやすい）"),
+            ('CUBE', "立方体", "一辺＝ボーン長の立方体（太め）"),
+        ],
+        default='SLIM',
+    )
+
+
+def _thickness_prop():
+    return bpy.props.FloatProperty(
+        name="太さ係数",
+        description="細身モードの断面（ボーン長に対する割合）",
+        default=0.30,
+        min=0.05,
+        max=1.0,
+    )
+
+
 # ──────────────── Operators ────────────────
 
 class UNOTCHI_OT_torso_add_biped(bpy.types.Operator):
     bl_idname = "unotchi.torso_add_biped"
     bl_label = "二足トルソーを追加"
     bl_description = "VRM1.x準拠の二足ブロックマネキンを生成する"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
 
     height_m: bpy.props.FloatProperty(
         name="身長(m)",
@@ -265,17 +305,37 @@ class UNOTCHI_OT_torso_add_biped(bpy.types.Operator):
         max=5.0,
     )
 
+    shape_mode: bpy.props.EnumProperty(
+        name="形状",
+        description="ブロックの作り方",
+        items=[
+            ('SLIM', "細身", "長さはボーン長のまま、太さだけ細くする（関節が読みやすい）"),
+            ('CUBE', "立方体", "一辺＝ボーン長の立方体（太め）"),
+        ],
+        default='SLIM',
+    )
+    thickness: bpy.props.FloatProperty(
+        name="太さ係数",
+        description="細身モードの断面（ボーン長に対する割合）",
+        default=0.30,
+        min=0.05,
+        max=1.0,
+    )
+
     def execute(self, context):
         scene = context.scene
         report = _build_torso(
             BIPED_BONES, "biped",
             self.height_m, self.size_factor,
+            self.shape_mode, self.thickness,
             scene,
         )
         self.report({'INFO'},
-            "トルソー: 二足 / ボーン%d / 立方体%d / メッシュ%d頂点 / 身長%.2fm / 一辺%.2f–%.2fm"
-            % (report["bones"], report["cubes"], report["verts"],
-               report["height_m"], report["edge_min"], report["edge_max"]))
+            "トルソー: 二足 / ボーン{} / 立方体{} / メッシュ{}頂点 / 身長{:.2f}m / "
+            "辺{:.2f}–{:.2f}m / 形状{}".format(
+                report["bones"], report["cubes"], report["verts"],
+                report["height_m"], report["edge_min"], report["edge_max"],
+                shape_label(report["shape_mode"])))
         return {'FINISHED'}
 
 
@@ -283,7 +343,7 @@ class UNOTCHI_OT_torso_add_quadruped(bpy.types.Operator):
     bl_idname = "unotchi.torso_add_quadruped"
     bl_label = "四足トルソーを追加"
     bl_description = "VRM1.x準拠の四足ブロックマネキンを生成する（前脚＝腕、後脚＝脚）"
-    bl_options = {'REGISTER', 'UNDO'}
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
 
     height_m: bpy.props.FloatProperty(
         name="体高(m)",
@@ -298,17 +358,37 @@ class UNOTCHI_OT_torso_add_quadruped(bpy.types.Operator):
         max=5.0,
     )
 
+    shape_mode: bpy.props.EnumProperty(
+        name="形状",
+        description="ブロックの作り方",
+        items=[
+            ('SLIM', "細身", "長さはボーン長のまま、太さだけ細くする（関節が読みやすい）"),
+            ('CUBE', "立方体", "一辺＝ボーン長の立方体（太め）"),
+        ],
+        default='SLIM',
+    )
+    thickness: bpy.props.FloatProperty(
+        name="太さ係数",
+        description="細身モードの断面（ボーン長に対する割合）",
+        default=0.30,
+        min=0.05,
+        max=1.0,
+    )
+
     def execute(self, context):
         scene = context.scene
         report = _build_torso(
             QUAD_BONES, "quadruped",
             self.height_m, self.size_factor,
+            self.shape_mode, self.thickness,
             scene,
         )
         self.report({'INFO'},
-            "トルソー: 四足 / ボーン%d / 立方体%d / メッシュ%d頂点 / 体高%.2fm / 一辺%.2f–%.2fm"
-            % (report["bones"], report["cubes"], report["verts"],
-               report["height_m"], report["edge_min"], report["edge_max"]))
+            "トルソー: 四足 / ボーン{} / 立方体{} / メッシュ{}頂点 / 体高{:.2f}m / "
+            "辺{:.2f}–{:.2f}m / 形状{}".format(
+                report["bones"], report["cubes"], report["verts"],
+                report["height_m"], report["edge_min"], report["edge_max"],
+                shape_label(report["shape_mode"])))
         return {'FINISHED'}
 
 
@@ -326,15 +406,22 @@ class UNOTCHI_PT_torso(bpy.types.Panel):
 
         layout.prop(scene, "unotchi_torso_height_m", text="身長/体高(m)")
         layout.prop(scene, "unotchi_torso_size_factor", text="サイズ倍率")
+        layout.prop(scene, "unotchi_torso_shape_mode")
+        if scene.unotchi_torso_shape_mode == 'SLIM':
+            layout.prop(scene, "unotchi_torso_thickness", text="太さ係数")
 
         col = layout.column(align=True)
         op1 = col.operator("unotchi.torso_add_biped", text="二足トルソーを追加")
         op1.height_m = scene.unotchi_torso_height_m
         op1.size_factor = scene.unotchi_torso_size_factor
+        op1.shape_mode = scene.unotchi_torso_shape_mode
+        op1.thickness = scene.unotchi_torso_thickness
 
         op2 = col.operator("unotchi.torso_add_quadruped", text="四足トルソーを追加")
         op2.height_m = scene.unotchi_torso_height_m
         op2.size_factor = scene.unotchi_torso_size_factor
+        op2.shape_mode = scene.unotchi_torso_shape_mode
+        op2.thickness = scene.unotchi_torso_thickness
 
 
 # ──────────────── Registration ────────────────
@@ -359,11 +446,15 @@ def register_props():
         min=0.1,
         max=5.0,
     )
+    bpy.types.Scene.unotchi_torso_shape_mode = _shape_mode_prop()
+    bpy.types.Scene.unotchi_torso_thickness = _thickness_prop()
 
 
 def unregister_props():
     del bpy.types.Scene.unotchi_torso_height_m
     del bpy.types.Scene.unotchi_torso_size_factor
+    del bpy.types.Scene.unotchi_torso_shape_mode
+    del bpy.types.Scene.unotchi_torso_thickness
 
 
 def register():

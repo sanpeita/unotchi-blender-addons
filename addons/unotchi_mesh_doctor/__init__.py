@@ -2,8 +2,10 @@
 unotchi_mesh_doctor — 生成AIメッシュの健康診断と一括修復
 """
 
-import bpy
+from typing import ClassVar
+
 import bmesh
+import bpy
 from mathutils import Matrix
 
 bl_info = {
@@ -240,7 +242,7 @@ class MESHDOCTOR_OT_scan(bpy.types.Operator):
     bl_idname = "unotchi.mesh_doctor_scan"
     bl_label = "メッシュ診断"
     bl_description = "選択メッシュの非多様体・孤立頂点・ゼロ面積面などを数える"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         report, msg = run_diagnose(context)
@@ -259,7 +261,7 @@ class MESHDOCTOR_OT_fix_all(bpy.types.Operator):
     bl_idname = "unotchi.mesh_doctor_fix_all"
     bl_label = "メッシュ修復"
     bl_description = "スケール適用→重複結合→ゼロ面積削除→孤立削除→穴埋め→法線再計算"
-    bl_options = {"REGISTER", "UNDO"}
+    bl_options: ClassVar[set[str]] = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         meshes = get_target_meshes(context)
