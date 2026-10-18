@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+
+id = "zatsu_remesh"
+version = "1.0.0"
+name = "Unotchi Zatsu Remesh"
+tagline = "Safe half-decimation for heavy AI meshes"
+maintainer = "unotchi"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:MIT",
+]
+
+# タグは公式の一覧から選んで追記する:
+# https://docs.blender.org/manual/en/latest/advanced/extensions/tags.html
