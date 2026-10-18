@@ -45,6 +45,9 @@ def main():
 
     out_dir = os.path.join(ROOT, "releases")
     os.makedirs(out_dir, exist_ok=True)
+    # 古い zip を消してから作る（版が上がったときに古い版が残らないように）
+    for stale in glob.glob(os.path.join(out_dir, "*.zip")):
+        os.remove(stale)
     ok = True
     for manifest in sorted(glob.glob(os.path.join(ROOT, "addons", "*", "blender_manifest.toml"))):
         pkg = os.path.dirname(manifest)
