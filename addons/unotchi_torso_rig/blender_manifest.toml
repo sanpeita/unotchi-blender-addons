@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+
+id = "unotchi_torso_rig"
+version = "1.0.0"
+name = "Unotchi Torso Rig"
+tagline = "One-click block mannequin based on VRM1.x humanoid bones"
+maintainer = "unotchi"
+type = "add-on"
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:MIT",
+]
+
+# タグは公式の一覧から選んで追記する:
+# https://docs.blender.org/manual/en/latest/advanced/extensions/tags.html
