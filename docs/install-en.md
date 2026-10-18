@@ -1,5 +1,28 @@
 # Install & Usage (English)
 
+## Easiest way: add the repository (recommended)
+
+Register this repository in Blender and you can install from a list and **receive automatic updates**.
+
+1. Open `Edit > Preferences > Get Extensions`
+2. Use the `Repositories` dropdown at the top right -> `+` -> **Add Remote Repository**
+3. Paste this URL:
+
+   ```text
+   https://unotchi.com/unotchi-blender-addons/repository/index.json
+   ```
+
+4. Give it any name (e.g. `unotchi add-ons`) and confirm. The list will show "Unotchi ..."
+5. Press **Install** next to the add-on you want
+
+> A plain GitHub repository URL (like `https://github.com/...`) does **not** work here.
+> Blender reads the `index.json` above. If it fails, remove the wrong repository with the
+> `-` button and add this one instead.
+
+---
+
+## Installing from a zip
+
 <!-- TODO(release): add one screenshot per add-on. Avoid heavy GIFs. -->
 
 ## 1. Download
