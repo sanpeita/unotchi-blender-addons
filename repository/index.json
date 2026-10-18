@@ -16,7 +16,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./auto_snake_rig-1.0.1.zip",
       "archive_size": 4981,
-      "archive_hash": "sha256:db9f1876252c2ecf51aec89e358a12513ac2aa076825d99e33f257c03ce371fe"
+      "archive_hash": "sha256:0140e99eeddef6f7b8d439b91f5f0de3f3c37734b1fabfdeed2d4df6434eeb54"
     },
     {
       "schema_version": "1.0.0",
@@ -32,7 +32,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_mesh_doctor-1.0.0.zip",
       "archive_size": 3974,
-      "archive_hash": "sha256:a8e36a775c9e250a9ea944d8c258cfd04f95e26893da43c0b8f59aa452186813"
+      "archive_hash": "sha256:715801d66dac5c855eb95645d862b36abcba0b2e9f27b24b9126d2d54367ff01"
     },
     {
       "schema_version": "1.0.0",
@@ -48,7 +48,23 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_torso_rig-1.0.0.zip",
       "archive_size": 5265,
-      "archive_hash": "sha256:9e8ff20b883c6eeebd839a91c63c8ac309307ed1a20fd386f5caad8656a6ea5f"
+      "archive_hash": "sha256:fb55b6b3b70c0cdde5cba419a8058bf8430b440fffd6fda119f9fbe03b9e77aa"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "unotchi_wiggle_place",
+      "name": "Unotchi Wiggle Place",
+      "tagline": "Place wiggly meshes in one click (array + armature)",
+      "version": "1.0.0",
+      "type": "add-on",
+      "maintainer": "unotchi",
+      "license": [
+        "SPDX:MIT"
+      ],
+      "blender_version_min": "4.2.0",
+      "archive_url": "./unotchi_wiggle_place-1.0.0.zip",
+      "archive_size": 4418,
+      "archive_hash": "sha256:0c0fd07137f4a4cbe8f8c65ab077c50617aab8ba6a9e892214eb91182d78d084"
     },
     {
       "schema_version": "1.0.0",
@@ -64,7 +80,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./zatsu_remesh-1.0.1.zip",
       "archive_size": 4284,
-      "archive_hash": "sha256:f8fd6640c5eb76f167fde9a9990683f4142fcc773c784ebb4e02d4a97f8dce3a"
+      "archive_hash": "sha256:29d01287171e2203fffd220fcb287400558947d6b0f47411071da42b4e667f5a"
     }
   ]
 }

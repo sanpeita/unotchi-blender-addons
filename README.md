@@ -14,6 +14,7 @@ Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.
 | **Unotchi Auto Snake Rig** | Generate a wiggly rig from X/Y/Z bone counts | 3D Viewport > Sidebar (N) > うのっち tab > Snake Rig |
 | **Unotchi Zatsu Remesh** | Safe half-decimation for heavy AI meshes | 3D Viewport > Sidebar (N) > うのっち tab > Zatsu Remesh |
 | **Unotchi Torso Rig** | One-click block mannequin based on VRM1.x humanoid bones | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
+| **Unotchi Wiggle Place** | Place wiggly meshes in one click (array + armature) | 3D Viewport > Sidebar (N) > うのっち tab > Wiggle Place |
 
 **Install** — in Blender, open `Get Extensions` and add this repository URL (one-tap install, and updates arrive automatically):
 
@@ -32,6 +33,7 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 | **クネクネリグ自動生成** | 選んだメッシュに X/Y/Z 方向のボーン数を指定してアーマチュアを自動生成。頂点数に応じた上限つき。 | 3Dビューポート > N パネル > うのっち > クネクネリグ | 合格 |
 | **雑リメッシュ（半減）** | 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。 | 3Dビューポート > N パネル > うのっち > 雑リメッシュ | 合格 |
 | **トルソー（ブロックマネキン）** | VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュアを作り、各ボーンに「一辺＝ボーン長」の立方体メッシュを付ける。体型検討・ポージングの下敷き用。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
+| **くねくねチェーン** | 個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。 | 3Dビューポート > N パネル > うのっち > くねくねチェーン | 合格 |
 <!-- ADDONS:END -->
 
 <!-- USAGE:START -->
@@ -62,6 +64,12 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 ![トルソー（ブロックマネキン）の使用イメージ](docs/images/unotchi_torso_rig.png)
 
 VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュアを作り、各ボーンに「一辺＝ボーン長」の立方体メッシュを付ける。体型検討・ポージングの下敷き用。
+
+### くねくねチェーン
+
+![くねくねチェーンの使用イメージ](docs/images/unotchi_wiggle_place.png)
+
+個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。
 
 <!-- USAGE:END -->
 ## いちばん楽な方法: リポジトリを追加する（おすすめ）
