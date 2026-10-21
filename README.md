@@ -15,6 +15,7 @@ Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.
 | **Unotchi Zatsu Remesh** | Safe half-decimation for heavy AI meshes | 3D Viewport > Sidebar (N) > うのっち tab > Zatsu Remesh |
 | **Unotchi Torso Rig** | One-click block mannequin based on VRM1.x humanoid bones | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
 | **Unotchi Wiggle Place** | Place wiggly meshes in one click (array + armature) | 3D Viewport > Sidebar (N) > うのっち tab > Wiggle Place |
+| **Unotchi Forge** | VRM-ready procedural mohawk, horns and shaved patterns | 3D Viewport > Sidebar (N) > うのっち tab > Hair Forge / Horn Forge / Shave Forge |
 
 **Install** — in Blender, open `Get Extensions` and add this repository URL (one-tap install, and updates arrive automatically):
 
@@ -34,6 +35,7 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 | **雑リメッシュ（半減）** | 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。 | 3Dビューポート > N パネル > うのっち > 雑リメッシュ | 合格 |
 | **トルソー（ブロックマネキン）** | VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュアを作り、各ボーンに「一辺＝ボーン長」の立方体メッシュを付ける。体型検討・ポージングの下敷き用。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
 | **くねくねチェーン** | 個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。 | 3Dビューポート > N パネル > うのっち > くねくねチェーン | 合格 |
+| **うのっち Forge（モヒカン・ツノ・剃り込み）** | VRoid/VRM の頭部に沿って、モヒカン（束）・ツノ・剃り込みを手続き生成する。生成物は頭ボーンにウェイト済みでVRMにそのまま書き出せ、剃り込みは頭皮テクスチャへ直接焼く。 | 3Dビューポート > N パネル > うのっち > Hair Forge / Horn Forge / Shave Forge | 合格 |
 <!-- ADDONS:END -->
 
 <!-- USAGE:START -->
@@ -70,6 +72,12 @@ VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュ�
 ![くねくねチェーンの使用イメージ](docs/images/unotchi_wiggle_place.png)
 
 個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。
+
+### うのっち Forge（モヒカン・ツノ・剃り込み）
+
+![うのっち Forge（モヒカン・ツノ・剃り込み）の使用イメージ](docs/images/unotchi_forge.png)
+
+VRoid/VRM の頭部に沿って、モヒカン（束）・ツノ・剃り込みを手続き生成する。生成物は頭ボーンにウェイト済みでVRMにそのまま書き出せ、剃り込みは頭皮テクスチャへ直接焼く。
 
 <!-- USAGE:END -->
 ## いちばん楽な方法: リポジトリを追加する（おすすめ）

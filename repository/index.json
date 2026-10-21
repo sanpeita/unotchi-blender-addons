@@ -16,7 +16,23 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./auto_snake_rig-1.0.1.zip",
       "archive_size": 4981,
-      "archive_hash": "sha256:0140e99eeddef6f7b8d439b91f5f0de3f3c37734b1fabfdeed2d4df6434eeb54"
+      "archive_hash": "sha256:21a3486dbe8cabe16aba38b4f6bf4c9a30222c4d331f6f8b703323428fc847ea"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "unotchi_forge",
+      "name": "Unotchi Forge",
+      "tagline": "VRM-ready procedural mohawk, horns and shaved patterns",
+      "version": "0.3.0",
+      "type": "add-on",
+      "maintainer": "unotchi",
+      "license": [
+        "SPDX:MIT"
+      ],
+      "blender_version_min": "4.2.0",
+      "archive_url": "./unotchi_forge-0.3.0.zip",
+      "archive_size": 29022,
+      "archive_hash": "sha256:b672260d3734f6fbcf85ef1b2967fbcfcb14a5a5eb4484d1beaacd57b372a009"
     },
     {
       "schema_version": "1.0.0",
@@ -32,7 +48,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_mesh_doctor-1.0.0.zip",
       "archive_size": 3974,
-      "archive_hash": "sha256:715801d66dac5c855eb95645d862b36abcba0b2e9f27b24b9126d2d54367ff01"
+      "archive_hash": "sha256:1f70cc1bcb8ef3953e3ef69acb0bd730dd2dcab63ccd3270c7a0b0ea09a249bc"
     },
     {
       "schema_version": "1.0.0",
@@ -48,7 +64,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_torso_rig-1.0.0.zip",
       "archive_size": 5265,
-      "archive_hash": "sha256:fb55b6b3b70c0cdde5cba419a8058bf8430b440fffd6fda119f9fbe03b9e77aa"
+      "archive_hash": "sha256:21540633ba25f4e8377aa0a9f3696c5cf223a76004bbccba79091ee9953f1e2a"
     },
     {
       "schema_version": "1.0.0",
@@ -64,7 +80,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_wiggle_place-1.0.0.zip",
       "archive_size": 4418,
-      "archive_hash": "sha256:0c0fd07137f4a4cbe8f8c65ab077c50617aab8ba6a9e892214eb91182d78d084"
+      "archive_hash": "sha256:99182402eb1939828ff8a6c601ab590754a94e4217339ec61742be5e0888ce59"
     },
     {
       "schema_version": "1.0.0",
@@ -80,7 +96,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./zatsu_remesh-1.0.1.zip",
       "archive_size": 4284,
-      "archive_hash": "sha256:29d01287171e2203fffd220fcb287400558947d6b0f47411071da42b4e667f5a"
+      "archive_hash": "sha256:0d1f166367c437f6fbccf85aaed28b7ebe0933a4e8aab1cc0f006c399c4de048"
     }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "name": "shave_pasta",
+  "label": "剃り込み パスタ",
+  "family": "shave",
+  "params": {
+    "theta": 92,
+    "phi": 60,
+    "segments": 64,
+    "rows": 52,
+    "pattern": "pasta",
+    "count": 4,
+    "thickness": 0.12,
+    "theta_start": 32.0,
+    "theta_end": 328.0,
+    "phi_bottom": 98.0,
+    "phi_top": 24.0
+  }
+}

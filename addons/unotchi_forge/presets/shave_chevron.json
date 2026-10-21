@@ -1,0 +1,16 @@
+{
+  "name": "shave_chevron",
+  "label": "剃り込み: シェブロン",
+  "family": "shave",
+  "params": {
+    "theta": 92,
+    "phi": 60,
+    "segments": 64,
+    "rows": 52,
+    "pattern": "chevron",
+    "count": 3,
+    "thickness": 0.12,
+    "theta_start": 62,
+    "theta_end": 298
+  }
+}

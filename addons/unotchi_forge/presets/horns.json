@@ -1,0 +1,26 @@
+{
+  "name": "horns",
+  "label": "ツノ / horns",
+  "family": "horns",
+  "color": [
+    0.62,
+    0.55,
+    0.46,
+    1.0
+  ],
+  "params": {
+    "count": 2,
+    "spread": 34,
+    "phi": 26,
+    "phi_fall": 14,
+    "length": 0.26,
+    "radius": 0.03,
+    "smooth": 3,
+    "twist": 0.5,
+    "lobes": 3,
+    "flute": 0.1,
+    "curve": 0.35,
+    "taper_power": 1.0,
+    "tip": 0.02
+  }
+}
