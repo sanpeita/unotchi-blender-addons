@@ -19,6 +19,7 @@ Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.
 | **Unotchi Face Bars** | Black-plate eyes and mouth with aa/ih/ou/ee/oh + blink, bound to VRM expressions | 3D Viewport > Sidebar (N) > うのっち tab > Face Bars |
 | **Unotchi VRM Bone Replace** | Remap a Tripo/Mixamo/UE rig to VRM 1.0 humanoid names and hierarchy | 3D Viewport > Sidebar (N) > うのっち tab > VRM Bones |
 | **Unotchi Auto Humanoid Rig** | Rig an unrigged humanoid mesh with VRM 1.0 bones and weights | 3D Viewport > Sidebar (N) > うのっち tab > Auto Rig |
+| **Unotchi VRM Meta** | Set VRM title, author, license and thumbnail from inside Blender | 3D Viewport > Sidebar (N) > うのっち tab > VRM Meta |
 
 **Install** — in Blender, open `Get Extensions` and add this repository URL (one-tap install, and updates arrive automatically):
 
@@ -42,6 +43,7 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 | **黒板顔（目・口）** | リグ済みキャラの顔に黒い板ポリの目と口を面に沿って作り、VRM1.0の表情プリセット（blink/aa/ih/ou/ee/oh）に結線する。3tene等でまばたき・口パクが動く。 | 3Dビューポート > N パネル > うのっち > 黒板顔（目・口） | 合格 |
 | **VRMボーン置換** | 取り込んだリグのボーン名・親子関係・頂点グループ名を VRM 1.0 humanoid に置き換える。名前で当たらないぶんは骨格の形から推定し、眼球ボーンも必要なら作る。診断ボタンで実行前に確認できる。 | 3Dビューポート > N パネル > うのっち > VRMボーン置換 | 合格 |
 | **自動リグ（VRM1.0）** | リグの無い人体メッシュの断面を実測して VRM1.0 humanoid（22本＋眼球2本）とウェイトを作る。分割モデルは1パーツ=1ボーン、1枚シェルは自動ウェイト→距離方式へ自動で切り替える。 | 3Dビューポート > N パネル > うのっち > 自動リグ（VRM1.0） | 合格 |
+| **VRMメタ（名前・サムネ）** | VRMの名前・バージョン・作者・連絡先・ライセンス・サムネイルを日本語パネルから設定する。サムネイルはビューポートの見た目をそのまま撮影（3Dビューが無いときはカメラレンダー）して埋め込む。 | 3Dビューポート > N パネル > うのっち > VRMメタ（名前・サムネ） | 合格 |
 <!-- ADDONS:END -->
 
 <!-- USAGE:START -->
