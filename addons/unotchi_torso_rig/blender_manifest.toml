@@ -1,9 +1,9 @@
 schema_version = "1.0.0"
 
 id = "unotchi_torso_rig"
-version = "1.0.0"
+version = "1.1.0"
 name = "Unotchi Torso Rig"
-tagline = "One-click block mannequin based on VRM1.x humanoid bones"
+tagline = "Block mannequin + a ready-to-use humanoid (ver2)"
 maintainer = "unotchi"
 type = "add-on"
 

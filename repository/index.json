@@ -1,6 +1,7 @@
 {
   "version": "v1",
   "blocklist": [],
+  "assetlib_auth_method": "PER_LIBRARY",
   "data": [
     {
       "schema_version": "1.0.0",
@@ -16,7 +17,39 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./auto_snake_rig-1.0.1.zip",
       "archive_size": 4981,
-      "archive_hash": "sha256:21a3486dbe8cabe16aba38b4f6bf4c9a30222c4d331f6f8b703323428fc847ea"
+      "archive_hash": "sha256:7bbb44631762d3d0c477698b23a5b9307f10e9fc54364a68cc10a76b14139297"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "unotchi_auto_humanoid_rig",
+      "name": "Unotchi Auto Humanoid Rig",
+      "tagline": "Rig an unrigged humanoid mesh with VRM 1.0 bones and weights",
+      "version": "1.0.0",
+      "type": "add-on",
+      "maintainer": "unotchi",
+      "license": [
+        "SPDX:MIT"
+      ],
+      "blender_version_min": "4.2.0",
+      "archive_url": "./unotchi_auto_humanoid_rig-1.0.0.zip",
+      "archive_size": 8635,
+      "archive_hash": "sha256:8672b5bd5f825ead1c976ab8bf7b434ac64907260046ab262d1c860c6ae6051d"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "unotchi_face_bars",
+      "name": "Unotchi Face Bars",
+      "tagline": "Black-plate eyes and mouth with aa/ih/ou/ee/oh + blink, bound to",
+      "version": "1.0.0",
+      "type": "add-on",
+      "maintainer": "unotchi",
+      "license": [
+        "SPDX:MIT"
+      ],
+      "blender_version_min": "4.2.0",
+      "archive_url": "./unotchi_face_bars-1.0.0.zip",
+      "archive_size": 11299,
+      "archive_hash": "sha256:5142e055269ff5090dfaa98744be6dc7187f12b79fe35272e2813d6cd63e2aea"
     },
     {
       "schema_version": "1.0.0",
@@ -32,7 +65,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_forge-0.3.0.zip",
       "archive_size": 29022,
-      "archive_hash": "sha256:b672260d3734f6fbcf85ef1b2967fbcfcb14a5a5eb4484d1beaacd57b372a009"
+      "archive_hash": "sha256:a11bac9d0c06e6fdc24237cbae23baa888c5cbb2773b03462e4354b28cf2afc3"
     },
     {
       "schema_version": "1.0.0",
@@ -48,13 +81,29 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_mesh_doctor-1.0.0.zip",
       "archive_size": 3974,
-      "archive_hash": "sha256:1f70cc1bcb8ef3953e3ef69acb0bd730dd2dcab63ccd3270c7a0b0ea09a249bc"
+      "archive_hash": "sha256:58145d4902bde7453efaddc0f6ef0911769e5c094695fda6646b8b0ef0ba1d48"
     },
     {
       "schema_version": "1.0.0",
       "id": "unotchi_torso_rig",
       "name": "Unotchi Torso Rig",
-      "tagline": "One-click block mannequin based on VRM1.x humanoid bones",
+      "tagline": "Block mannequin + a ready-to-use humanoid (ver2)",
+      "version": "1.1.0",
+      "type": "add-on",
+      "maintainer": "unotchi",
+      "license": [
+        "SPDX:MIT"
+      ],
+      "blender_version_min": "4.2.0",
+      "archive_url": "./unotchi_torso_rig-1.1.0.zip",
+      "archive_size": 7562,
+      "archive_hash": "sha256:41c04de3214bcb43a3900ecafa046227b0ca72a2016919dde7c83329b54e17a7"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "unotchi_vrm_bone_replace",
+      "name": "Unotchi VRM Bone Replace",
+      "tagline": "Remap a Tripo/Mixamo/UE rig to VRM 1.0 humanoid names and hierar",
       "version": "1.0.0",
       "type": "add-on",
       "maintainer": "unotchi",
@@ -62,9 +111,9 @@
         "SPDX:MIT"
       ],
       "blender_version_min": "4.2.0",
-      "archive_url": "./unotchi_torso_rig-1.0.0.zip",
-      "archive_size": 5265,
-      "archive_hash": "sha256:21540633ba25f4e8377aa0a9f3696c5cf223a76004bbccba79091ee9953f1e2a"
+      "archive_url": "./unotchi_vrm_bone_replace-1.0.0.zip",
+      "archive_size": 7113,
+      "archive_hash": "sha256:508bb440ff1e5622b8122fb10456fc32940b38c2dd79843d153f3291f72feabc"
     },
     {
       "schema_version": "1.0.0",
@@ -80,7 +129,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_wiggle_place-1.0.0.zip",
       "archive_size": 4418,
-      "archive_hash": "sha256:99182402eb1939828ff8a6c601ab590754a94e4217339ec61742be5e0888ce59"
+      "archive_hash": "sha256:df04654df486617d70067b4ced8a6e17a31250ce0e26cdfe42dcfff58074f3c9"
     },
     {
       "schema_version": "1.0.0",
@@ -96,7 +145,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./zatsu_remesh-1.0.1.zip",
       "archive_size": 4284,
-      "archive_hash": "sha256:0d1f166367c437f6fbccf85aaed28b7ebe0933a4e8aab1cc0f006c399c4de048"
+      "archive_hash": "sha256:57421fc6b2990e0cffd2f20b6c94f33a86483f3ab8e14d94eec558842d893d52"
     }
   ]
 }

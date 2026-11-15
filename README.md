@@ -13,9 +13,12 @@ Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.
 | **Unotchi Mesh Doctor** | Scan and repair AI-generated meshes in one click | 3D Viewport > Sidebar (N) > うのっち tab > Mesh Doctor |
 | **Unotchi Auto Snake Rig** | Generate a wiggly rig from X/Y/Z bone counts | 3D Viewport > Sidebar (N) > うのっち tab > Snake Rig |
 | **Unotchi Zatsu Remesh** | Safe half-decimation for heavy AI meshes | 3D Viewport > Sidebar (N) > うのっち tab > Zatsu Remesh |
-| **Unotchi Torso Rig** | One-click block mannequin based on VRM1.x humanoid bones | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
+| **Unotchi Torso Rig** | Block mannequin + a ready-to-use humanoid (ver2) | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
 | **Unotchi Wiggle Place** | Place wiggly meshes in one click (array + armature) | 3D Viewport > Sidebar (N) > うのっち tab > Wiggle Place |
 | **Unotchi Forge** | VRM-ready procedural mohawk, horns and shaved patterns | 3D Viewport > Sidebar (N) > うのっち tab > Hair Forge / Horn Forge / Shave Forge |
+| **Unotchi Face Bars** | Black-plate eyes and mouth with aa/ih/ou/ee/oh + blink, bound to VRM expressions | 3D Viewport > Sidebar (N) > うのっち tab > Face Bars |
+| **Unotchi VRM Bone Replace** | Remap a Tripo/Mixamo/UE rig to VRM 1.0 humanoid names and hierarchy | 3D Viewport > Sidebar (N) > うのっち tab > VRM Bones |
+| **Unotchi Auto Humanoid Rig** | Rig an unrigged humanoid mesh with VRM 1.0 bones and weights | 3D Viewport > Sidebar (N) > うのっち tab > Auto Rig |
 
 **Install** — in Blender, open `Get Extensions` and add this repository URL (one-tap install, and updates arrive automatically):
 
@@ -33,9 +36,12 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 | **メッシュ診断・一括修復** | 生成AIメッシュの非多様体・孤立頂点・ゼロ面積面・重複頂点・法線反転・スケール未適用を数え、1ボタンで直す。 | 3Dビューポート > N パネル > うのっち > Mesh Doctor | 合格 |
 | **クネクネリグ自動生成** | 選んだメッシュに X/Y/Z 方向のボーン数を指定してアーマチュアを自動生成。頂点数に応じた上限つき。 | 3Dビューポート > N パネル > うのっち > クネクネリグ | 合格 |
 | **雑リメッシュ（半減）** | 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。 | 3Dビューポート > N パネル > うのっち > 雑リメッシュ | 合格 |
-| **トルソー（ブロックマネキン）** | VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュアを作り、各ボーンに「一辺＝ボーン長」の立方体メッシュを付ける。体型検討・ポージングの下敷き用。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
+| **トルソー（ブロックマネキン / ver2 人体）** | VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
 | **くねくねチェーン** | 個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。 | 3Dビューポート > N パネル > うのっち > くねくねチェーン | 合格 |
 | **うのっち Forge（モヒカン・ツノ・剃り込み）** | VRoid/VRM の頭部に沿って、モヒカン（束）・ツノ・剃り込みを手続き生成する。生成物は頭ボーンにウェイト済みでVRMにそのまま書き出せ、剃り込みは頭皮テクスチャへ直接焼く。 | 3Dビューポート > N パネル > うのっち > Hair Forge / Horn Forge / Shave Forge | 合格 |
+| **黒板顔（目・口）** | リグ済みキャラの顔に黒い板ポリの目と口を面に沿って作り、VRM1.0の表情プリセット（blink/aa/ih/ou/ee/oh）に結線する。3tene等でまばたき・口パクが動く。 | 3Dビューポート > N パネル > うのっち > 黒板顔（目・口） | 合格 |
+| **VRMボーン置換** | 取り込んだリグのボーン名・親子関係・頂点グループ名を VRM 1.0 humanoid に置き換える。名前で当たらないぶんは骨格の形から推定し、眼球ボーンも必要なら作る。診断ボタンで実行前に確認できる。 | 3Dビューポート > N パネル > うのっち > VRMボーン置換 | 合格 |
+| **自動リグ（VRM1.0）** | リグの無い人体メッシュの断面を実測して VRM1.0 humanoid（22本＋眼球2本）とウェイトを作る。分割モデルは1パーツ=1ボーン、1枚シェルは自動ウェイト→距離方式へ自動で切り替える。 | 3Dビューポート > N パネル > うのっち > 自動リグ（VRM1.0） | 合格 |
 <!-- ADDONS:END -->
 
 <!-- USAGE:START -->
@@ -61,11 +67,11 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 
 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。
 
-### トルソー（ブロックマネキン）
+### トルソー（ブロックマネキン / ver2 人体）
 
-![トルソー（ブロックマネキン）の使用イメージ](docs/images/unotchi_torso_rig.png)
+![トルソー（ブロックマネキン / ver2 人体）の使用イメージ](docs/images/unotchi_torso_rig.png)
 
-VRM1.x の humanoid ボーン名で二足22本／四足24本のアーマチュアを作り、各ボーンに「一辺＝ボーン長」の立方体メッシュを付ける。体型検討・ポージングの下敷き用。
+VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。
 
 ### くねくねチェーン
 

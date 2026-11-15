@@ -1,6 +1,6 @@
 bl_info = {
     "name": "unotchi_torso_rig",
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (5, 0, 0),
     "category": "Object",
     "description": "VRM1.x準拠のボーン構造を立方体の人体として即座にシーンへ生成する",
@@ -253,6 +253,164 @@ def _build_torso(bone_defs, mode, height_m, size_factor, shape_mode, thickness, 
 
 # ──────────────── Shape properties ────────────────
 
+
+# ──────────────── Ver2: そのまま使えるブロック人体 ────────────────
+# T ポーズ。座標は H（身長）に対する比率。左側だけ書き、右は _expand_bones が反転する。
+
+_V2_LEFT = [
+    ("hips",       (0,     0,     0.50), (0,     0,     0.55), None),
+    ("spine",      (0,     0,     0.55), (0,     0,     0.63), "hips"),
+    ("chest",      (0,     0,     0.63), (0,     0,     0.71), "spine"),
+    ("upperChest", (0,     0,     0.71), (0,     0,     0.79), "chest"),
+    ("neck",       (0,     0,     0.79), (0,     0,     0.86), "upperChest"),
+    ("head",       (0,     0,     0.86), (0,     0,     0.99), "neck"),
+    ("leftShoulder", (0.020, 0, 0.780), (0.080, 0, 0.780), "upperChest"),
+    ("leftUpperArm", (0.080, 0, 0.780), (0.235, 0, 0.780), "leftShoulder"),
+    ("leftLowerArm", (0.235, 0, 0.780), (0.375, 0, 0.780), "leftUpperArm"),
+    ("leftHand",     (0.375, 0, 0.780), (0.460, 0, 0.780), "leftLowerArm"),
+    ("leftUpperLeg", (0.055, 0, 0.500), (0.060, 0, 0.280), "hips"),
+    ("leftLowerLeg", (0.060, 0, 0.280), (0.060, 0, 0.060), "leftUpperLeg"),
+    ("leftFoot",     (0.060, 0, 0.060), (0.060, -0.090, 0.015), "leftLowerLeg"),
+    ("leftToes",     (0.060, -0.090, 0.015), (0.060, -0.150, 0.015), "leftFoot"),
+    ("leftEye",      (0.035, -0.050, 0.925), (0.035, -0.080, 0.925), "head"),
+]
+
+# 断面（幅, 奥行）H 比率
+_V2_SECTIONS = {
+    "hips": (0.19, 0.13), "spine": (0.20, 0.13), "chest": (0.21, 0.14),
+    "upperChest": (0.21, 0.14), "neck": (0.06, 0.06), "head": (0.135, 0.14),
+    "leftShoulder": (0.07, 0.09), "leftUpperArm": (0.060, 0.070),
+    "leftLowerArm": (0.055, 0.065), "leftHand": (0.075, 0.070),
+    "leftUpperLeg": (0.085, 0.100), "leftLowerLeg": (0.075, 0.090),
+    "leftFoot": (0.075, 0.120), "leftToes": (0.070, 0.100),
+}
+
+V2_BONES = _expand_bones(_V2_LEFT)
+_V2_EYES = ("leftEye", "rightEye")
+
+
+def _v2_section(name):
+    """部位の断面（幅, 奥行）。右側は左側の定義を共有する（左右の太さを揃える）。"""
+    if name in _V2_SECTIONS:
+        return _V2_SECTIONS[name]
+    if name.startswith("right"):
+        return _V2_SECTIONS.get("left" + name[5:], (0.06, 0.06))
+    return (0.06, 0.06)
+
+
+def _build_v2_mesh(arm_obj, height_m, scene):
+    """ボーン1本につき箱1個の人体メッシュ（剛体ウェイト）を作る。"""
+    me = bpy.data.meshes.new("unotchi_torso_v2_body")
+    ob = bpy.data.objects.new("unotchi_torso_v2_body", me)
+    scene.collection.objects.link(ob)
+    arm_data = arm_obj.data
+
+    bm = bmesh.new()
+    boxes = []
+    for bone in arm_data.bones:
+        if bone.name in _V2_EYES:
+            continue
+        w, d = _v2_section(bone.name)
+        L = bone.length
+        half_w = w * height_m * 0.5
+        half_d = d * height_m * 0.5
+        y0, y1 = -0.04 * L, 1.04 * L
+        # 箱は「ワールド軸を基準にした明示的なフレーム」で作る。
+        # bone.matrix_local（ロール依存）で作ると左右で軸が入れ替わり、体が非対称になる（実測）。
+        axis = (bone.tail_local - bone.head_local)
+        if axis.length < 1e-9:
+            axis = Vector((0.0, 0.0, 1.0))
+        axis.normalize()
+        ref = Vector((0.0, 0.0, 1.0)) if abs(axis.z) < 0.9 else Vector((0.0, 1.0, 0.0))
+        side = ref.cross(axis)
+        if side.length < 1e-6:
+            side = Vector((1.0, 0.0, 0.0))
+        side.normalize()
+        depth = axis.cross(side).normalized()
+        head = bone.head_local
+        corners = []
+        for t in (y0, y1):
+            for (sw, sd) in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                pos = (head + axis * t
+                       + side * (sw * half_w)
+                       + depth * (sd * half_d))
+                if pos.z < 0.0:      # 足裏を床に合わせる（箱が床下へ出ない）
+                    pos.z = 0.0
+                corners.append(bm.verts.new(pos))
+        bm.verts.ensure_lookup_table()
+        faces = [(0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1),
+                 (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)]
+        for f in faces:
+            try:
+                bm.faces.new([corners[i] for i in f])
+            except ValueError:
+                pass
+        boxes.append((bone.name, 8))
+
+    # 箱の面の巻き順は作った順でバラバラなので、外向き法線へ揃える。
+    # 内向きのままだと板（黒板顔）が頭の内側に入り、陰影も逆になる（実測）。
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    bm.normal_update()
+    bm.to_mesh(me)
+    bm.free()
+    me.validate()
+    me.update()
+
+    # 頂点グループ（箱ごとに 1.0）
+    start = 0
+    for name, count in boxes:
+        vg = ob.vertex_groups.new(name=name)
+        vg.add(list(range(start, start + count)), 1.0, "REPLACE")
+        start += count
+
+    ob.parent = arm_obj
+    ob.matrix_parent_inverse = arm_obj.matrix_world.inverted()
+    mod = ob.modifiers.new("Armature", "ARMATURE")
+    mod.object = arm_obj
+    return ob, boxes
+
+
+def _build_v2(height_m, scene):
+    arm_obj, info = _build_armature(V2_BONES, height_m, 1.0, scene)
+    mesh_obj, boxes = _build_v2_mesh(arm_obj, height_m, scene)
+    present = {b.name for b in arm_obj.data.bones}
+    # 左右対称チェック（同じ名前の L/R パーツの |x| 幅が一致するか）
+    half_w = {}
+    for ob in (mesh_obj,):
+        mw = ob.matrix_world
+        for name, _c in boxes:
+            if not (name.startswith("left") or name.startswith("right")):
+                continue
+            base = name[4:] if name.startswith("left") else name[5:]
+            xs = [abs((mw @ v.co).x) for v in ob.data.vertices]
+            half_w.setdefault(base, []).append((name, min(xs), max(xs)))
+    sym_ok, sym_diff = 1, 0.0
+    for base, items in half_w.items():
+        if len(items) == 2:
+            a, b = items
+            dw = abs((a[2] - a[1]) - (b[2] - b[1]))
+            sym_diff = max(sym_diff, dw)
+            if dw > 1e-4:
+                sym_ok = 0
+    report = {
+        "mode": "biped_v2",
+        "armature": arm_obj.name,
+        "mesh_name": mesh_obj.name,
+        "height_m": round(height_m, 4),
+        "bones": len(arm_obj.data.bones),
+        "parts": len(boxes),
+        "verts": len(mesh_obj.data.vertices),
+        "faces": len(mesh_obj.data.polygons),
+        "vertex_groups": len(mesh_obj.vertex_groups),
+        "missing_required": info["missing_required"],
+        "has_eyes": int(all(e in present for e in _V2_EYES)),
+        "skinned": True,
+        "symmetric": sym_ok,
+        "symmetry_diff": round(sym_diff, 6),
+    }
+    scene["unotchi_torso_v2_report"] = report
+    return report
+
 _SHAPE_LABELS = {"CUBE": "立方体", "SLIM": "細身"}
 
 
@@ -392,6 +550,25 @@ class UNOTCHI_OT_torso_add_quadruped(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+
+class UNOTCHI_OT_torso_add_biped_v2(bpy.types.Operator):
+    bl_idname = "unotchi.torso_add_biped_v2"
+    bl_label = "二足トルソーver2を追加"
+    bl_description = ("そのまま使えるブロック人体（頭・胴・手足の箱＋VRM1.0ボーン22本＋眼球2本）を"
+                      "Tポーズで生成する。ウェイト済みなので即ポーズできる")
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
+
+    height_m: bpy.props.FloatProperty(name="身長(m)", default=1.40, min=0.50, max=2.50)
+
+    def execute(self, context):
+        report = _build_v2(self.height_m, context.scene)
+        self.report({'INFO'},
+                    "トルソーver2: ボーン{} / パーツ{} / メッシュ{}頂点 / 身長{:.2f}m / 目{}".format(
+                        report["bones"], report["parts"], report["verts"],
+                        report["height_m"], report["has_eyes"]))
+        return {'FINISHED'}
+
 # ──────────────── Panel ────────────────
 
 class UNOTCHI_PT_torso(bpy.types.Panel):
@@ -417,6 +594,11 @@ class UNOTCHI_PT_torso(bpy.types.Panel):
         op1.shape_mode = scene.unotchi_torso_shape_mode
         op1.thickness = scene.unotchi_torso_thickness
 
+        col.separator()
+        op3 = col.operator("unotchi.torso_add_biped_v2", text="二足トルソーver2（そのまま使える人体）")
+        op3.height_m = scene.unotchi_torso_height_m
+
+        col.separator()
         op2 = col.operator("unotchi.torso_add_quadruped", text="四足トルソーを追加")
         op2.height_m = scene.unotchi_torso_height_m
         op2.size_factor = scene.unotchi_torso_size_factor
@@ -428,6 +610,7 @@ class UNOTCHI_PT_torso(bpy.types.Panel):
 
 _CLASSES = [
     UNOTCHI_OT_torso_add_biped,
+    UNOTCHI_OT_torso_add_biped_v2,
     UNOTCHI_OT_torso_add_quadruped,
     UNOTCHI_PT_torso,
 ]
