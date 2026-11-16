@@ -17,7 +17,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./auto_snake_rig-1.0.1.zip",
       "archive_size": 4981,
-      "archive_hash": "sha256:89b81ff525e0d56ec2b2d8a030f05de12f606c2b8ef92862ee361b034cd98897"
+      "archive_hash": "sha256:65ec9ebc5ab5772d95aae9b7b5ab3e1d8f676c4899ceddf3707077163b5b0be7"
     },
     {
       "schema_version": "1.0.0",
@@ -33,7 +33,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_auto_humanoid_rig-1.0.0.zip",
       "archive_size": 8635,
-      "archive_hash": "sha256:23036ad26fca43c591bda3cf8496ba848bff829abeb2fac4cac960de65a8f1fe"
+      "archive_hash": "sha256:7d71371669f2a084a1f5926da007e1f1ac1a3430bf9833041b140627f9de20d7"
     },
     {
       "schema_version": "1.0.0",
@@ -49,7 +49,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_face_bars-1.0.0.zip",
       "archive_size": 11299,
-      "archive_hash": "sha256:4d52cd2b9d40d60699bc95113e0c3ffc234f304ca0fda231bb2006e345c4440d"
+      "archive_hash": "sha256:0d74bb5d2661bd51d8ea84724bdfae1f88b5137770d6f8618ed314b05901073c"
     },
     {
       "schema_version": "1.0.0",
@@ -65,7 +65,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_forge-0.3.0.zip",
       "archive_size": 29022,
-      "archive_hash": "sha256:3c964e049a7f59b57513ec7c719cf0d663050ebb3390e4162b343123ccafdc46"
+      "archive_hash": "sha256:72bf66d83791ee8e78549e0e417986518cc68ab82b12bbda88b2f9470e376475"
     },
     {
       "schema_version": "1.0.0",
@@ -81,23 +81,23 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_mesh_doctor-1.0.0.zip",
       "archive_size": 3974,
-      "archive_hash": "sha256:1a97657b7a9d738911729d1e288d5c23a8454e7a594a3c87bea1edcc75c884e8"
+      "archive_hash": "sha256:6ea9592ce04c9a8c02539f0a1dc44058674b72d25ae65572194e08c574d1d07a"
     },
     {
       "schema_version": "1.0.0",
       "id": "unotchi_torso_rig",
       "name": "Unotchi Torso Rig",
-      "tagline": "Block mannequin + a ready-to-use humanoid (ver2)",
-      "version": "1.1.0",
+      "tagline": "Block mannequin, humanoid (ver2) and a 168-tri chibi",
+      "version": "1.2.0",
       "type": "add-on",
       "maintainer": "unotchi",
       "license": [
         "SPDX:MIT"
       ],
       "blender_version_min": "4.2.0",
-      "archive_url": "./unotchi_torso_rig-1.1.0.zip",
-      "archive_size": 7562,
-      "archive_hash": "sha256:50f7c9ac6260fb9b0ced2c097e01d1f453d697dc5d8ab66db239da8e6b8edd02"
+      "archive_url": "./unotchi_torso_rig-1.2.0.zip",
+      "archive_size": 11159,
+      "archive_hash": "sha256:e23587eca4dcda974678cc59e6b07f01d96dcba7108e01d8fc7b5cc02f62bae3"
     },
     {
       "schema_version": "1.0.0",
@@ -113,7 +113,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_vrm_bone_replace-1.0.0.zip",
       "archive_size": 7113,
-      "archive_hash": "sha256:4ac2c129b3e9380b8359540ac309ed1de3e92dcd4be5543f4a2ff1da0dbe23ca"
+      "archive_hash": "sha256:503464d1825819dc75f08dfe7ee3b191d844e3bd6aba313c68b7c229f6e33b89"
     },
     {
       "schema_version": "1.0.0",
@@ -129,7 +129,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_vrm_meta-1.0.0.zip",
       "archive_size": 4247,
-      "archive_hash": "sha256:e6e82f17f63383096e6a6d00fe81a672b0ed7d067539d7e864a8027507a6009f"
+      "archive_hash": "sha256:2e7c60405d4a8250e74f6f9e5eea08fe411be77965bc8f28f355b336306d04c7"
     },
     {
       "schema_version": "1.0.0",
@@ -145,7 +145,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./unotchi_wiggle_place-1.0.0.zip",
       "archive_size": 4418,
-      "archive_hash": "sha256:e1aed2d7edcd0e410cae49c0d970a066d55d8da60cf5e681c653c50ead7f0e79"
+      "archive_hash": "sha256:2001d5dc93e285fb88482e8b8ff26875b6ee27b1afcb5df4e9674de0bb82d7b7"
     },
     {
       "schema_version": "1.0.0",
@@ -161,7 +161,7 @@
       "blender_version_min": "4.2.0",
       "archive_url": "./zatsu_remesh-1.0.1.zip",
       "archive_size": 4284,
-      "archive_hash": "sha256:4af865842f886e757e6b4e4e7c6929d3a2fa1795e378b4043f2ea211f4b3d176"
+      "archive_hash": "sha256:7a9b954ad52f916992554281796a6064b76b8cf53455dbb3792684c0ed2dd605"
     }
   ]
 }

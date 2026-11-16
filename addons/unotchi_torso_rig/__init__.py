@@ -1,6 +1,6 @@
 bl_info = {
     "name": "unotchi_torso_rig",
-    "version": (1, 1, 0),
+    "version": (1, 2, 0),
     "blender": (5, 0, 0),
     "category": "Object",
     "description": "VRM1.x準拠のボーン構造を立方体の人体として即座にシーンへ生成する",
@@ -89,12 +89,12 @@ QUAD_BONES = _expand_bones(_QUAD_LEFT)
 
 # ──────────────── Helper functions ────────────────
 
-def _build_armature(bone_defs, height_m, size_factor, scene):
+def _build_armature(bone_defs, height_m, size_factor, scene, name="unotchi_torso"):
     """Create armature with bones from bone_defs.
     Returns (armature_obj, report_dict).
     """
-    arm_data = bpy.data.armatures.new("unotchi_torso")
-    arm_obj = bpy.data.objects.new("unotchi_torso", arm_data)
+    arm_data = bpy.data.armatures.new(name)
+    arm_obj = bpy.data.objects.new(name, arm_data)
     scene.collection.objects.link(arm_obj)
     scene.view_layers[0].objects.active = arm_obj
     arm_obj.select_set(True)
@@ -411,6 +411,315 @@ def _build_v2(height_m, scene):
     scene["unotchi_torso_v2_report"] = report
     return report
 
+# ──────────────── Chibi: ディフォルメ（△256・VRM1.0 = 3tene 対応） ────────────────
+# 3頭身・Tポーズ。ボーンは三角形を消費しないので humanoid は全部入れる。
+# 箱1個 = 12tri。14箱 = 168tri（予算256のうち88triを髪・服・顔パーツへ残す）。
+# 目と口は作らない（unotchi_face_bars が眼球ボーンを基準に後付けする）。
+
+_CHIBI_LEFT = [
+    ("hips",          (0, 0, 0.360),  (0, 0, 0.440),  None),
+    ("spine",         (0, 0, 0.440),  (0, 0, 0.510),  "hips"),
+    ("chest",         (0, 0, 0.510),  (0, 0, 0.600),  "spine"),
+    ("neck",          (0, 0, 0.600),  (0, 0, 0.655),  "chest"),
+    ("head",          (0, 0, 0.655),  (0, 0, 1.000),  "neck"),
+    ("leftShoulder",  (0.030, 0, 0.575), (0.085, 0, 0.575), "chest"),
+    ("leftUpperArm",  (0.085, 0, 0.575), (0.200, 0, 0.575), "leftShoulder"),
+    ("leftLowerArm",  (0.200, 0, 0.575), (0.300, 0, 0.575), "leftUpperArm"),
+    ("leftHand",      (0.300, 0, 0.575), (0.355, 0, 0.575), "leftLowerArm"),
+    ("leftUpperLeg",  (0.058, 0, 0.360), (0.058, 0, 0.200), "hips"),
+    ("leftLowerLeg",  (0.058, 0, 0.200), (0.058, 0, 0.030), "leftUpperLeg"),
+    ("leftFoot",      (0.058, 0, 0.030), (0.058, -0.075, 0.012), "leftLowerLeg"),
+    ("leftToes",      (0.058, -0.075, 0.012), (0.058, -0.115, 0.012), "leftFoot"),
+    ("leftEye",       (0.062, -0.150, 0.830), (0.062, -0.156, 0.830), "head"),
+]
+
+CHIBI_BONES = _expand_bones(_CHIBI_LEFT)
+
+
+def _mirror_names(names):
+    """left* を右へ反転した名前リスト（箱を作る順を左右で揃える）。"""
+    out = []
+    for n in names:
+        out.append(n)
+        if n.startswith("left"):
+            out.append("right" + n[4:])
+    return out
+
+
+# 箱を作るボーン。首・肩・手・つま先・目は箱なし（手は前腕の箱を延長して覆う）。
+# 目は unotchi_face_bars が眼球ボーンを基準に後付けするので、ここでは箱を作らない。
+_CHIBI_BOX_NAMES = ["hips", "spine", "chest", "head",
+                    "leftUpperArm", "leftLowerArm", "leftUpperLeg", "leftLowerLeg",
+                    "leftFoot"]
+CHIBI_BOX_BONES = _mirror_names(_CHIBI_BOX_NAMES)
+
+# 断面（幅, 奥行）H 比率。右側は左の定義を共有する。
+_CHIBI_SECTIONS = {
+    "hips": (0.260, 0.170), "spine": (0.270, 0.175), "chest": (0.300, 0.190),
+    "head": (0.300, 0.300),
+    "leftUpperArm": (0.075, 0.075), "leftLowerArm": (0.070, 0.070),
+    "leftUpperLeg": (0.100, 0.105), "leftLowerLeg": (0.090, 0.095),
+    "leftFoot": (0.100, 0.055),
+}
+# 箱の長さ方向の余白（ボーン長に対する比）。既定は関節で重なるよう上下へ伸ばす。
+# 胸は首の高さまで延長（首の箱は作らない）／前腕は手まで延長／すねは膝側へ延長。
+_CHIBI_PAD = {"head": (-0.04, 1.00), "chest": (-0.04, 1.50),
+              "leftLowerArm": (-0.12, 1.55), "leftLowerLeg": (-0.12, 1.04)}
+_CHIBI_EYES = ("leftEye", "rightEye")
+CHIBI_TRI_BUDGET = 256
+_CHIBI_SKIN = (0.94, 0.80, 0.68, 1.0)
+_CHIBI_EYE_COLOR = (0.06, 0.06, 0.09, 1.0)
+
+
+def _chibi_section(name):
+    if name in _CHIBI_SECTIONS:
+        return _CHIBI_SECTIONS[name]
+    if name.startswith("right"):
+        return _CHIBI_SECTIONS.get("left" + name[5:], (0.070, 0.070))
+    return (0.070, 0.070)
+
+
+def _chibi_pad(name):
+    """箱の余白。右側は左の定義を共有する（片側だけ長い/短いを防ぐ）。"""
+    if name in _CHIBI_PAD:
+        return _CHIBI_PAD[name]
+    if name.startswith("right"):
+        return _CHIBI_PAD.get("left" + name[5:], (-0.04, 1.04))
+    return (-0.04, 1.04)
+
+
+def _chibi_materials(need_eye):
+    """肌（＋目の箱があるときだけ目）の素材。VRM書き出しで色を保つためノードの Base Color も設定する。"""
+    wanted = [("unotchi_chibi_skin", _CHIBI_SKIN)]
+    if need_eye:
+        wanted.append(("unotchi_chibi_eye", _CHIBI_EYE_COLOR))
+    mats = []
+    for name, color in wanted:
+        mat = bpy.data.materials.new(name)
+        mat.diffuse_color = color
+        try:
+            bsdf = mat.node_tree.nodes["Principled BSDF"]
+            bsdf.inputs["Base Color"].default_value = color
+            bsdf.inputs["Roughness"].default_value = 0.82
+        except Exception:
+            pass
+        mats.append(mat)
+    return mats
+
+
+def _build_chibi_mesh(arm_obj, height_m, scene):
+    """箱1個 = 1ボーン（剛体ウェイト）のディフォルメ人体。"""
+    me = bpy.data.meshes.new("unotchi_chibi_body")
+    ob = bpy.data.objects.new("unotchi_chibi_body", me)
+    scene.collection.objects.link(ob)
+    need_eye = any(name in _CHIBI_EYES for name in CHIBI_BOX_BONES)
+    for mat in _chibi_materials(need_eye):
+        me.materials.append(mat)
+
+    bm = bmesh.new()
+    boxes = []
+    for name in CHIBI_BOX_BONES:
+        bone = arm_obj.data.bones[name]
+        w, d = _chibi_section(name)
+        y0, y1 = _chibi_pad(name)
+        L = bone.length
+        half_w, half_d = w * height_m * 0.5, d * height_m * 0.5
+        # ワールド軸基準の明示フレーム（ロール依存だと左右で断面の軸が入れ替わる）
+        axis = bone.tail_local - bone.head_local
+        axis = Vector((0.0, 0.0, 1.0)) if axis.length < 1e-9 else axis.normalized()
+        ref = Vector((0.0, 0.0, 1.0)) if abs(axis.z) < 0.9 else Vector((0.0, 1.0, 0.0))
+        side = ref.cross(axis)
+        side = Vector((1.0, 0.0, 0.0)) if side.length < 1e-6 else side.normalized()
+        depth = axis.cross(side).normalized()
+        head = bone.head_local
+        corners = []
+        for t in (y0, y1):
+            for sw, sd in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                pos = (head + axis * (t * L)
+                       + side * (sw * half_w)
+                       + depth * (sd * half_d))
+                if pos.z < 0.0:      # 足裏を床へ（箱を床下へ出さない）
+                    pos.z = 0.0
+                corners.append(bm.verts.new(pos))
+        index = 1 if name in _CHIBI_EYES else 0
+        for f in ((0, 1, 2, 3), (7, 6, 5, 4), (0, 4, 5, 1),
+                  (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)):
+            try:
+                face = bm.faces.new([corners[i] for i in f])
+                face.material_index = index
+                face.smooth = False
+            except ValueError:
+                pass
+        boxes.append((name, 8))
+
+    # 巻き順はバラバラなので外向き法線へ揃える（内向きだと陰影が逆になる）
+    bmesh.ops.recalc_face_normals(bm, faces=list(bm.faces))
+    bm.normal_update()
+    bm.to_mesh(me)
+    bm.free()
+    me.validate()
+    me.update()
+
+    start = 0
+    for name, count in boxes:
+        ob.vertex_groups.new(name=name).add(
+            list(range(start, start + count)), 1.0, "REPLACE")
+        start += count
+
+    ob.parent = arm_obj
+    ob.matrix_parent_inverse = arm_obj.matrix_world.inverted()
+    ob.modifiers.new("Armature", "ARMATURE").object = arm_obj
+    return ob, boxes
+
+
+def _chibi_spans(boxes):
+    spans, start = {}, 0
+    for name, count in boxes:
+        spans[name] = (start, start + count)
+        start += count
+    return spans
+
+
+def _chibi_face_keys(ob, boxes):
+    """まばたき用シェイプキー（目の箱を上下へ潰す。三角形は増えない）。
+    目の箱は作らない方針なので、通常は 0 を返す（まばたきは unotchi_face_bars 側で作る）。
+    """
+    spans = _chibi_spans(boxes)
+    eye_spans = {n: s for n, s in spans.items() if n in _CHIBI_EYES}
+    if not eye_spans:
+        return 0
+    vs = ob.data.vertices
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    ob.shape_key_add(name="Basis", from_mix=False)
+    zs = {n: [vs[i].co.z for i in range(a, b)]
+          for n, (a, b) in eye_spans.items()}
+    for key, targets in (("blink", list(zs)), ("blinkLeft", ["leftEye"]),
+                         ("blinkRight", ["rightEye"])):
+        kb = ob.shape_key_add(name=key, from_mix=False)
+        for name in targets:
+            a, b = spans[name]
+            z = zs[name]
+            mid = (min(z) + max(z)) * 0.5
+            for i in range(a, b):
+                co = kb.data[i].co.copy()
+                co.z = mid + (vs[i].co.z - mid) * 0.06
+                kb.data[i].co = co
+    return 3
+
+
+def _chibi_symmetry(ob, boxes):
+    """左右の同名パーツの |x| 端を突き合わせる（幅と中心のズレを同時に見る）。"""
+    spans = _chibi_spans(boxes)
+    bounds = {}
+    for name, (a, b) in spans.items():
+        xs = [ob.data.vertices[i].co.x for i in range(a, b)]
+        bounds[name] = (min(xs), max(xs))
+    worst = 0.0
+    for name, (mn, mx) in bounds.items():
+        if not name.startswith("left"):
+            continue
+        pair = bounds.get("right" + name[4:])
+        if pair is None:
+            continue
+        worst = max(worst, abs(abs(mn) - abs(pair[1])), abs(abs(mx) - abs(pair[0])))
+    return (1 if worst <= 1e-4 else 0), worst
+
+
+def _chibi_try_bind_vrm(arm_obj, mesh_obj):
+    """VRMアドオンが有効なときだけ humanoid とまばたきを結線する。
+    無効なら何もしない（このアドオンは VRM アドオンに依存しない）。
+    戻り値: (humanoid本数, 表情本数, 状態名)
+    """
+    ext = getattr(arm_obj.data, "vrm_addon_extension", None)
+    if ext is None:
+        return 0, 0, "no_vrm_addon"
+    try:
+        bpy.ops.vrm.assign_vrm1_humanoid_human_bones_automatically(
+            armature_object_name=arm_obj.name)
+    except Exception:
+        pass
+    human_bones = ext.vrm1.humanoid.human_bones
+    assigned = 0
+    for key in dir(human_bones):
+        if key.startswith("_"):
+            continue
+        item = getattr(human_bones, key, None)
+        if hasattr(item, "node") and item.node.bone_name:
+            assigned += 1
+    bound = 0
+    try:
+        keys = ({kb.name for kb in mesh_obj.data.shape_keys.key_blocks}
+                if mesh_obj.data.shape_keys is not None else set())
+        expressions = ext.vrm1.expressions
+        for name in ("blink", "blinkLeft", "blinkRight"):
+            if name not in keys:      # 表情キーが無い（＝目は face_bars 側）なら結線しない
+                continue
+            expression = expressions.all_name_to_expression_dict().get(name)
+            if expression is None:
+                continue
+            for index in range(len(expression.morph_target_binds) - 1, -1, -1):
+                if expression.morph_target_binds[index].node.mesh_object_name == mesh_obj.name:
+                    expression.morph_target_binds.remove(index)
+            result = bpy.ops.vrm.add_vrm1_expression_morph_target_bind(
+                armature_object_name=arm_obj.name, expression_name=name)
+            if "FINISHED" not in result:
+                continue
+            bind = expression.morph_target_binds[-1]
+            bind.node.bpy_object = mesh_obj
+            bind.index = name
+            bind.weight = 1.0
+            bound += 1
+    except Exception:
+        pass
+    return assigned, bound, "ok"
+
+
+def _build_chibi(height_m, scene):
+    arm_obj, info = _build_armature(CHIBI_BONES, height_m, 1.0, scene,
+                                   name="unotchi_chibi")
+    mesh_obj, boxes = _build_chibi_mesh(arm_obj, height_m, scene)
+    keys = _chibi_face_keys(mesh_obj, boxes)
+    sym_ok, sym_diff = _chibi_symmetry(mesh_obj, boxes)
+    tris = sum(len(p.vertices) - 2 for p in mesh_obj.data.polygons)
+    present = {b.name for b in arm_obj.data.bones}
+    vrm_humanoid, vrm_expressions, vrm_status = _chibi_try_bind_vrm(arm_obj, mesh_obj)
+    report = {
+        "mode": "chibi",
+        "armature": arm_obj.name,
+        "mesh_name": mesh_obj.name,
+        "height_m": round(height_m, 4),
+        "bones": len(arm_obj.data.bones),
+        "boxes": len(boxes),
+        "verts": len(mesh_obj.data.vertices),
+        "faces": len(mesh_obj.data.polygons),
+        "tris": tris,
+        "tri_budget": CHIBI_TRI_BUDGET,
+        "tri_remaining": CHIBI_TRI_BUDGET - tris,
+        "within_budget": 1 if tris <= CHIBI_TRI_BUDGET else 0,
+        "colors": len(mesh_obj.data.materials),
+        "vertex_groups": len(mesh_obj.vertex_groups),
+        "shape_keys": keys,
+        "missing_required": info["missing_required"],
+        "has_eyes": int(all(e in present for e in _CHIBI_EYES)),
+        "skinned": True,
+        "symmetric": sym_ok,
+        "symmetry_diff": round(sym_diff, 6),
+        "vrm_ready": int(info["missing_required"] == 0 and sym_ok == 1
+                         and tris <= CHIBI_TRI_BUDGET),
+        "vrm_status": vrm_status,
+        "vrm_humanoid": vrm_humanoid,
+        "vrm_expressions": vrm_expressions,
+        "origin_z": round(arm_obj.location.z, 6),
+    }
+    scene["unotchi_torso_chibi_report"] = report
+
+    scene.view_layers[0].objects.active = arm_obj
+    for o in scene.objects:
+        o.select_set(o == arm_obj)
+    return report
+
+
 _SHAPE_LABELS = {"CUBE": "立方体", "SLIM": "細身"}
 
 
@@ -569,6 +878,31 @@ class UNOTCHI_OT_torso_add_biped_v2(bpy.types.Operator):
                         report["height_m"], report["has_eyes"]))
         return {'FINISHED'}
 
+class UNOTCHI_OT_torso_add_chibi(bpy.types.Operator):
+    bl_idname = "unotchi.torso_add_chibi"
+    bl_label = "ディフォルメトルソー（△256）を追加"
+    bl_description = ("3頭身のディフォルメ人体を箱だけで生成する（14箱・168tri・1色）。"
+                      "目と口は顔パーツのアドオン（unotchi_face_bars）で後付けする前提で、"
+                      "VRM1.0 humanoid 23ボーン（眼球ボーン含む）を張る。"
+                      "VRMアドオンで書き出せば 3tene でそのまま動く")
+    bl_options: ClassVar[set[str]] = {'REGISTER', 'UNDO'}
+
+    height_m: bpy.props.FloatProperty(name="身長(m)", default=1.20, min=0.30, max=2.00)
+
+    def execute(self, context):
+        report = _build_chibi(self.height_m, context.scene)
+        extra = ("" if report["vrm_status"] != "ok"
+                 else " / VRM結線(人{}/表情{})".format(
+                     report["vrm_humanoid"], report["vrm_expressions"]))
+        self.report({'INFO'},
+                    "ディフォルメトルソー: ボーン{} / 箱{} / {}tri（予算{}・残り{}）/ "
+                    "{}色 / 目{} / 身長{:.2f}m{}".format(
+                        report["bones"], report["boxes"], report["tris"],
+                        report["tri_budget"], report["tri_remaining"],
+                        report["colors"], report["has_eyes"], report["height_m"], extra))
+        return {'FINISHED'}
+
+
 # ──────────────── Panel ────────────────
 
 class UNOTCHI_PT_torso(bpy.types.Panel):
@@ -599,6 +933,11 @@ class UNOTCHI_PT_torso(bpy.types.Panel):
         op3.height_m = scene.unotchi_torso_height_m
 
         col.separator()
+        op4 = col.operator("unotchi.torso_add_chibi", text="ディフォルメトルソー（△256 / 3tene）")
+        op4.height_m = scene.unotchi_torso_height_m
+        col.label(text="目と口は「黒板顔」アドオンで追加（VRM結線もそこで）", icon='INFO')
+
+        col.separator()
         op2 = col.operator("unotchi.torso_add_quadruped", text="四足トルソーを追加")
         op2.height_m = scene.unotchi_torso_height_m
         op2.size_factor = scene.unotchi_torso_size_factor
@@ -611,6 +950,7 @@ class UNOTCHI_PT_torso(bpy.types.Panel):
 _CLASSES = [
     UNOTCHI_OT_torso_add_biped,
     UNOTCHI_OT_torso_add_biped_v2,
+    UNOTCHI_OT_torso_add_chibi,
     UNOTCHI_OT_torso_add_quadruped,
     UNOTCHI_PT_torso,
 ]

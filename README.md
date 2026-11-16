@@ -13,7 +13,7 @@ Free, MIT-licensed Blender add-ons for 3D work and digital education. Blender 4.
 | **Unotchi Mesh Doctor** | Scan and repair AI-generated meshes in one click | 3D Viewport > Sidebar (N) > うのっち tab > Mesh Doctor |
 | **Unotchi Auto Snake Rig** | Generate a wiggly rig from X/Y/Z bone counts | 3D Viewport > Sidebar (N) > うのっち tab > Snake Rig |
 | **Unotchi Zatsu Remesh** | Safe half-decimation for heavy AI meshes | 3D Viewport > Sidebar (N) > うのっち tab > Zatsu Remesh |
-| **Unotchi Torso Rig** | Block mannequin + a ready-to-use humanoid (ver2) | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
+| **Unotchi Torso Rig** | Block mannequin, humanoid (ver2) and a 168-tri chibi | 3D Viewport > Sidebar (N) > うのっち tab > Torso |
 | **Unotchi Wiggle Place** | Place wiggly meshes in one click (array + armature) | 3D Viewport > Sidebar (N) > うのっち tab > Wiggle Place |
 | **Unotchi Forge** | VRM-ready procedural mohawk, horns and shaved patterns | 3D Viewport > Sidebar (N) > うのっち tab > Hair Forge / Horn Forge / Shave Forge |
 | **Unotchi Face Bars** | Black-plate eyes and mouth with aa/ih/ou/ee/oh + blink, bound to VRM expressions | 3D Viewport > Sidebar (N) > うのっち tab > Face Bars |
@@ -37,7 +37,7 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 | **メッシュ診断・一括修復** | 生成AIメッシュの非多様体・孤立頂点・ゼロ面積面・重複頂点・法線反転・スケール未適用を数え、1ボタンで直す。 | 3Dビューポート > N パネル > うのっち > Mesh Doctor | 合格 |
 | **クネクネリグ自動生成** | 選んだメッシュに X/Y/Z 方向のボーン数を指定してアーマチュアを自動生成。頂点数に応じた上限つき。 | 3Dビューポート > N パネル > うのっち > クネクネリグ | 合格 |
 | **雑リメッシュ（半減）** | 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。 | 3Dビューポート > N パネル > うのっち > 雑リメッシュ | 合格 |
-| **トルソー（ブロックマネキン / ver2 人体）** | VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
+| **トルソー（ブロックマネキン / ver2 人体 / ディフォルメ△256）** | VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。ディフォルメは箱14個＝168tri・23ボーン（目と口は黒板顔アドオンで後付け）で、VRMとして3teneに読み込ませられる。 | 3Dビューポート > N パネル > うのっち > トルソー | 合格 |
 | **くねくねチェーン** | 個数・サイズ・間隔・軸を決めてボタン1つ。立方体／ICO球／選択メッシュを並べ、ボーン1本ずつでくねくね動くアーマチュアを作る。 | 3Dビューポート > N パネル > うのっち > くねくねチェーン | 合格 |
 | **うのっち Forge（モヒカン・ツノ・剃り込み）** | VRoid/VRM の頭部に沿って、モヒカン（束）・ツノ・剃り込みを手続き生成する。生成物は頭ボーンにウェイト済みでVRMにそのまま書き出せ、剃り込みは頭皮テクスチャへ直接焼く。 | 3Dビューポート > N パネル > うのっち > Hair Forge / Horn Forge / Shave Forge | 合格 |
 | **黒板顔（目・口）** | リグ済みキャラの顔に黒い板ポリの目と口を面に沿って作り、VRM1.0の表情プリセット（blink/aa/ih/ou/ee/oh）に結線する。3tene等でまばたき・口パクが動く。 | 3Dビューポート > N パネル > うのっち > 黒板顔（目・口） | 合格 |
@@ -69,11 +69,11 @@ Or download a `.zip` from [Releases](../../releases) and use `Install from Disk`
 
 生成AIの高ポリメッシュを、形を崩しにくい順序で約半分に減らす。押すたびに段階的に半減する。
 
-### トルソー（ブロックマネキン / ver2 人体）
+### トルソー（ブロックマネキン / ver2 人体 / ディフォルメ△256）
 
-![トルソー（ブロックマネキン / ver2 人体）の使用イメージ](docs/images/unotchi_torso_rig.png)
+![トルソー（ブロックマネキン / ver2 人体 / ディフォルメ△256）の使用イメージ](docs/images/unotchi_torso_rig.png)
 
-VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。
+VRM1.x の humanoid ボーンで二足22本／四足24本のアーマチュアを作る。ver2 では頭・胴・手足の箱を組み合わせた「そのまま使える人体」を剛体ウェイト付きで生成する。ディフォルメは箱14個＝168tri・23ボーン（目と口は黒板顔アドオンで後付け）で、VRMとして3teneに読み込ませられる。
 
 ### くねくねチェーン
 
